@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   signInWithGooglePopup,
-  createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 import FormInput from "../form-input/form-input.component";
 import { signInAuthUserWithEmailAndPassword } from "../../utils/firebase/firebase.utils";
@@ -14,28 +13,25 @@ const defaultSignInFields = {
 const SignInForm = () => {
   const [signInFormFields, setSignInFormFields] = useState(defaultSignInFields);
   const { email, password } = signInFormFields;
-
   const resetSignInFormFields = () => {
     setSignInFormFields(defaultSignInFields);
   };
   const SignInWithGoogle = async () => {
-    const { user } = await signInWithGooglePopup();
-    await createUserDocumentFromAuth(user);
+    await signInWithGooglePopup();
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const response = await signInAuthUserWithEmailAndPassword(email, password);
-      console.log(response);
+      await signInAuthUserWithEmailAndPassword(email, password);
       resetSignInFormFields();
     } catch (error) {
       switch (error.code) {
-        case 'auth/wrong-password':
-          alert('incorrect password/email');
+        case "auth/wrong-password":
+          alert("incorrect password/email");
           break;
-        case 'auth/user-not-found':
-          alert('no user associated with this email');
+        case "auth/user-not-found":
+          alert("no user associated with this email");
           break;
         default:
           console.log(error);
@@ -69,8 +65,10 @@ const SignInForm = () => {
           value={password}
         />
         <div className="buttons-container">
-        <Button type="submit">Sign In</Button>
-        <Button buttonType='google' type='button' onClick={SignInWithGoogle}>Google Sign In</Button>
+          <Button type="submit">Sign In</Button>
+          <Button buttonType="google" type="button" onClick={SignInWithGoogle}>
+            Google Sign In
+          </Button>
         </div>
       </form>
     </div>
