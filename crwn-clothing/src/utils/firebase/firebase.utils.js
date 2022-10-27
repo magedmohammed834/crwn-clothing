@@ -19,6 +19,7 @@ import {
   getDocs,
   QuerySnapshot,
 } from "firebase/firestore";
+import { resolve } from "source-map-resolve";
 const firebaseConfig = {
   apiKey: "AIzaSyAS7JN0Cw4dAshCzGRrKQGS50YXtIWTq4U",
   authDomain: "crwn-clothing-v2-e4801.firebaseapp.com",
@@ -87,7 +88,7 @@ export const createUserDocumentFromAuth = async (
       console.log("Error creating the user", error.message);
     }
   }
-  return userDocRef;
+  return userSnapshot;
 };
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
@@ -106,3 +107,16 @@ export const signOutUser = async () => {
 
 export const onAuthStateChangedListener = (callBack) =>
   onAuthStateChanged(auth, callBack);
+
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(
+      auth,
+      (userAuth) => {
+        unsubscribe();
+        resolve(userAuth);
+      },
+      reject
+    );
+  });
+};
